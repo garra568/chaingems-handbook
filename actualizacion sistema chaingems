@@ -1,0 +1,76 @@
+_config.ymltitle: "ChainGems Handbook"
+theme: jekyll-theme-slate   # cambia el tema si quieres
+gobernanza/constitucion.md, marca/brand_manual.md
+---
+title: "Gobernanza & Seguridad"
+version: "1.1"
+last_review: "2025-07-15"
+---
+## 1. Deduplicación inteligente
+
+1. **Fusionar la documentación en un “ChainGems Handbook” único (docs‑as‑code).**
+   • Crea un sitio estático (Jekyll o Hugo) y organiza los capítulos en carpetas: Gobernanza & Seguridad, Identidad de Marca, Framework de Prompting, Roles & APIs de agentes.
+   • El repositorio Git (rama `main`) será la fuente única de verdad; GitHub Pages publicará en tiempo real.
+---
+title: "Gobernanza & Seguridad"
+version: "1.1"
+last_review: "2025-07-15"
+---
+2. **Metadatos *front‑matter* YAML en cada página.**
+   Incluye `version:`, `owner:`, `last_review:`; un script de CI lee estos campos y alerta si dos páginas cubren el mismo tema con distinta versión.
+---
+title: "Gobernanza & Seguridad"
+version: "1.1"
+last_review: "2025-07-15"
+---
+3. **Linter antiparámetros duplicados en CI.**
+   Añade un *job* de GitHub Actions (`dup-check.yml`) que ejecuta un detector de duplicados y bloquea el PR si la similitud de texto supera 85 %.
+---
+title: "Gobernanza & Seguridad"
+version: "1.1"
+last_review: "2025-07-15"
+---
+4. **Etiquetas de reutilización “include/partial”.**
+   Convierte listas estándar (p. ej. pasos SEO) en *snippets* Markdown que otros documentos “incluyan” en lugar de copiar‑pegar.
+
+> **Resultado esperado:** una única fuente, sin copias, con versiones trazables y revisión automática antes de fusionar cambios.
+---
+title: "Gobernanza & Seguridad"
+version: "1.1"
+last_review: "2025-07-15"
+---
+## 2. Automatización proactiva de mejora continua
+
+| Paso                             | Descripción                                                                        | Herramienta                           | Trigger                                      |
+| -------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------- |
+| **a. Monitoreo de KPIs**         | Métricas (Helpfulness ≥ 8, precisión factual, CTR SEO) almacenadas en LangSmith    | `langsmith.run_evaluations()`         | Cada hora o al desplegar modelo              |
+| **b. Alertas semáforo**          | Si una métrica baja > 10 % vs. media móvil 7 d, envía webhook a Slack y abre issue | LangSmith + Zapier                    | Evento `metric_drop`                         |
+| **c. Reentrenamiento ligero**    | Genera dataset con diálogos mal puntuados y relanza DPO/PPO‑RLHF                   | `openai.finetunes.create()`           | Al cerrarse el issue o diariamente 03:00 UTC |
+| **d. Validación automática A/B** | Ejecuta suite de pruebas y evalúa offline en dataset *canary*                      | GitHub Actions + `pytest --langsmith` | Pull Request                                 |
+| **e. Blue‑Green deploy**         | Si la versión B supera A en ≥3 métricas, hace swap de rutas con feature‑flag       | Traefik / Feature flags               | Merge a `main`                               |
+
+**Claves técnicas**
+• *Dataset incremental*: usa bucles de feedback para etiquetar diálogos en caliente.
+• *Backtesting automático*: corre experimentos con logs históricos antes de promover un modelo.
+• *Plantillas CI listo‑para‑pegar*: reutiliza workflows “build‑test‑evaluate‑deploy” comunes a todos los agentes.
+
+> **Resultado esperado:** el sistema se auto‑evalúa y ajusta sin intervención humana, manteniendo la precisión y el ROI SEO.
+
+---
+---
+title: "Gobernanza & Seguridad"
+version: "1.1"
+last_review: "2025-07-15"
+---
+## 3. Próximos pasos rápidos
+
+| Día | Acción                                                           | Responsable |
+| --- | ---------------------------------------------------------------- | ----------- |
+| 0‑1 | Crear repositorio `chaingems-handbook` y subir contenido inicial | DevOps      |
+| 0‑2 | Configurar GitHub Pages y Actions (`dup-check`, `build-docs`)    | DevOps      |
+| 0‑3 | Migrar secciones del Word a Markdown, añadir *front‑matter*      | Tech Writer |
+| 3‑5 | Activar métricas en LangSmith y definir umbrales                 | Data/ML     |
+| 5‑7 | Probar pipeline completo con PR simulado                         | QA          |
+
+---
+**Fin del documento**
